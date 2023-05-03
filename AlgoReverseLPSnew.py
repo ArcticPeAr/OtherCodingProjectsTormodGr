@@ -6,7 +6,7 @@ df2UP_C7T11 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_11_FC
 
 dfUPMerged1_3 = pd.concat([df1UP_C1T5, df2UP_C7T11], axis=0)
 #dfUPMerged1_3 = dfUPMerged1_3.drop_duplicates(subset=['GeneID'], keep='first')
-dfUPMerged1_3 = dfUPMerged1_3.sort_values(by=['FDR'], ascending=True)
+dfUPMerged1_3 = dfUPMerged1_3.sort_values(by=['logFC'], ascending=False)
 #Reverse logFC values, logCPM values and sampleValues
 dfUPMerged1_3['logFC'] = dfUPMerged1_3['logFC'] * -1
 dfUPMerged1_3['logCPM'] = dfUPMerged1_3['logCPM'] * -1
@@ -20,7 +20,7 @@ df2DOWN_C7T11 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_11_
 
 dfDOWNMerged1_3 = pd.concat([df1DOWN_C1T5, df2DOWN_C7T11], axis=0)
 #dfDOWNMerged1_3 = dfDOWNMerged1_3.drop_duplicates(subset=['GeneID'], keep='first')
-dfDOWNMerged1_3 = dfDOWNMerged1_3.sort_values(by=['FDR'], ascending=True)
+dfDOWNMerged1_3 = dfDOWNMerged1_3.sort_values(by=['logFC'], ascending=True)
 #Reverse logFC values, logCPM values and sampleValues
 dfDOWNMerged1_3['logFC'] = dfDOWNMerged1_3['logFC'] * -1
 dfDOWNMerged1_3['logCPM'] = dfDOWNMerged1_3['logCPM'] * -1
@@ -31,7 +31,7 @@ UPMerged1_3 = dfDOWNMerged1_3
 #1.3
 UnionDF1_3 = pd.concat([DOWNMerged1_3, UPMerged1_3], axis=0)
 #UnionDF1_3 = UnionDF1_3.drop_duplicates(subset=['GeneID'], keep='first')
-UnionDF1_3 = UnionDF1_3.sort_values(by=['FDR'], ascending=True)
+UnionDF1_3 = UnionDF1_3.sort_values(by=['logFC'], ascending=False)
 
 #IntersectDF1_3 = pd.merge(dfUPMerged, dfDOWNMerged, on='GeneID', how='inner')
 
@@ -44,7 +44,7 @@ df2UP_C7T8 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_8_FC_O
 
 dfUPMerged1_4 = pd.concat([df1UP_C1T2, df2UP_C7T8], axis=0)
 #dfUPMerged1_4 = dfUPMerged1_4.drop_duplicates(subset=['GeneID'], keep='first')
-dfUPMerged1_4 = dfUPMerged1_4.sort_values(by=['FDR'], ascending=True)
+dfUPMerged1_4 = dfUPMerged1_4.sort_values(by=['logFC'], ascending=False)
 #Reverse logFC values, logCPM values and sampleValues
 dfUPMerged1_4['logFC'] = dfUPMerged1_4['logFC'] * -1
 dfUPMerged1_4['logCPM'] = dfUPMerged1_4['logCPM'] * -1
@@ -58,7 +58,7 @@ df2DOWN_C7T8 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_8_FC
 
 dfDOWNMerged1_4 = pd.concat([df1DOWN_C1T2, df2DOWN_C7T8], axis=0)
 #dfDOWNMerged1_4 = dfDOWNMerged1_4.drop_duplicates(subset=['GeneID'], keep='first')
-dfDOWNMerged1_4 = dfDOWNMerged1_4.sort_values(by=['FDR'], ascending=True)
+dfDOWNMerged1_4 = dfDOWNMerged1_4.sort_values(by=['logFC'], ascending=True)
 #Reverse logFC values, logCPM values and sampleValues
 dfDOWNMerged1_4['logFC'] = dfDOWNMerged1_4['logFC'] * -1
 dfDOWNMerged1_4['logCPM'] = dfDOWNMerged1_4['logCPM'] * -1
@@ -70,7 +70,7 @@ UPMerged1_4 = dfDOWNMerged1_4
 #1.4
 UnionDF1_4 = pd.concat([DOWNMerged1_3, DOWNMerged1_4], axis=0)
 #UnionDF1_4 = UnionDF1_4.drop_duplicates(subset=['GeneID'], keep='first')
-UnionDF1_4 = UnionDF1_4.sort_values(by=['FDR'], ascending=True)
+UnionDF1_4 = UnionDF1_4.sort_values(by=['logFC'], ascending=True)
 #IntersectDF1_4 = pd.merge(dfDOWNMerged1_3, dfDOWNMerged1_4, on='GeneID', how='inner')
 
 ############################################################################################################
@@ -78,11 +78,11 @@ UnionDF1_4 = UnionDF1_4.sort_values(by=['FDR'], ascending=True)
 #1.5
 UnionDF1_5 = pd.concat([UPMerged1_3, UPMerged1_4], axis=0)
 #UnionDF1_5 = UnionDF1_5.drop_duplicates(subset=['GeneID'], keep='first')
-UnionDF1_5 = UnionDF1_5.sort_values(by=['FDR'], ascending=True)
+UnionDF1_5 = UnionDF1_5.sort_values(by=['logFC'], ascending=False)
 
 IntersectDF1_5 = pd.merge(UPMerged1_3, UPMerged1_4, on='GeneID', how='inner')
 #IntersectDF1_5 = IntersectDF1_5.drop_duplicates(subset=['GeneID'], keep='first')
-#IntersectDF1_5 = IntersectDF1_5.sort_values(by=['FDR'], ascending=True) #sort by logFC not working because logFC changed to logFC_x and logFC_y
+#IntersectDF1_5 = IntersectDF1_5.sort_values(by=['logFC'], ascending=True) #sort by logFC not working because logFC changed to logFC_x and logFC_y
 
 
 ############################################################################################################
@@ -93,7 +93,7 @@ dfDegUP_C7T11 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_11_
 
 dfDegMerged2_1 = pd.concat([dfDegUP_C1T5, dfDegUP_C7T11], axis=0)
 #dfDegMerged2_1 = dfDegMerged2_1.drop_duplicates(subset=['GeneID'], keep='first')
-dfDegMerged2_1 = dfDegMerged2_1.sort_values(by=['FDR'], ascending=True)
+dfDegMerged2_1 = dfDegMerged2_1.sort_values(by=['logFC'], ascending=False)
 #Reverse logFC values, logCPM values and sampleValues
 dfDegMerged2_1['logFC'] = dfDegMerged2_1['logFC'] * -1
 dfDegMerged2_1['logCPM'] = dfDegMerged2_1['logCPM'] * -1
@@ -107,7 +107,7 @@ dfDegDOWN_C7T11 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_1
 
 dfDegMerged2_2 = pd.concat([dfDegDOWN_C1T5, dfDegDOWN_C7T11], axis=0)
 #dfDegMerged2_2 = dfDegMerged2_2.drop_duplicates(subset=['GeneID'], keep='first')
-dfDegMerged2_2 = dfDegMerged2_2.sort_values(by=['FDR'], ascending=True)
+dfDegMerged2_2 = dfDegMerged2_2.sort_values(by=['logFC'], ascending=True)
 #Reverse logFC values, logCPM values and sampleValues
 dfDegMerged2_2['logFC'] = dfDegMerged2_2['logFC'] * -1
 dfDegMerged2_2['logCPM'] = dfDegMerged2_2['logCPM'] * -1
@@ -123,7 +123,7 @@ dfDegUP_C7T8 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_8_FC
 dfDegDOWN_C7T8 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_8_FC_DEGRADERING.xlsx", sheet_name='DOWN')
 
 dfDegMergedUP = pd.concat([dfDegUP_C1T2, dfDegUP_C7T8], axis=0)
-dfDegMergedUP = dfDegMergedUP.sort_values(by=['FDR'], ascending=True)
+dfDegMergedUP = dfDegMergedUP.sort_values(by=['logFC'], ascending=False)
 #Reverse logFC values, logCPM values and sampleValues
 dfDegMergedUP['logFC'] = dfDegMergedUP['logFC'] * -1
 dfDegMergedUP['logCPM'] = dfDegMergedUP['logCPM'] * -1
@@ -132,7 +132,7 @@ dfDegMergedUP['Versus'] = dfDegMergedUP['Versus'].apply(lambda x: '-'.join(x.spl
 DOWNMerged3_1 = dfDegMergedUP
 
 dfDegMergedDOWN = pd.concat([dfDegDOWN_C1T2, dfDegDOWN_C7T8], axis=0)  
-dfDegMergedDOWN = dfDegMergedDOWN.sort_values(by=['FDR'], ascending=True)
+dfDegMergedDOWN = dfDegMergedDOWN.sort_values(by=['logFC'], ascending=True)
 #Reverse logFC values, logCPM values and sampleValues
 dfDegMergedDOWN['logFC'] = dfDegMergedDOWN['logFC'] * -1
 dfDegMergedDOWN['logCPM'] = dfDegMergedDOWN['logCPM'] * -1
@@ -141,6 +141,80 @@ dfDegMergedDOWN['Versus'] = dfDegMergedDOWN['Versus'].apply(lambda x: '-'.join(x
 UPMerged3_2 = dfDegMergedDOWN
 
 
+###################################################################################################################
+#4.1.1 Autophagy UP
+dfAFUP_C1T5 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_1-T_5_FC_AUTOFAGI.xlsx", sheet_name='UP')
+dfAFUP_C7T11 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_11_FC_AUTOFAGI.xlsx", sheet_name='UP')
+dfAFUP_C1T2 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_1-T_2_FC_AUTOFAGI.xlsx", sheet_name='UP')
+dfAFUP_C7T8 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_8_FC_AUTOFAGI.xlsx", sheet_name='UP')
+
+dfAFUPMerged = pd.concat([dfAFUP_C1T5, dfAFUP_C7T11, dfAFUP_C1T2, dfAFUP_C7T8], axis=0)
+dfAFUPMerged = dfAFUPMerged.sort_values(by=['logFC'], ascending=False)
+#Reverse logFC values, logCPM values and sampleValues
+dfAFUPMerged['logFC'] = dfAFUPMerged['logFC'] * -1
+dfAFUPMerged['logCPM'] = dfAFUPMerged['logCPM'] * -1
+dfAFUPMerged['Versus'] = dfAFUPMerged['Versus'].apply(lambda x: '-'.join(x.split('-')[::-1]))
+#Since the logFC values are reversed, what was considered upregulated for Cx-Tx is now downregulated and vice versa:
+DOWNMergedAF = dfAFUPMerged
+
+#4.1.2 Autophagy DOWN
+dfAFDOWN_C1T5 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_1-T_5_FC_AUTOFAGI.xlsx", sheet_name='DOWN')
+dfAFDOWN_C7T11 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_11_FC_AUTOFAGI.xlsx", sheet_name='DOWN')
+dfAFDOWN_C1T2 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_1-T_2_FC_AUTOFAGI.xlsx", sheet_name='DOWN')
+dfAFDOWN_C7T8 = pd.read_excel("/home/petear/MEGA/TormodGroup/InputData/C_7-T_8_FC_AUTOFAGI.xlsx", sheet_name='DOWN')
+
+dfAFDOWNMerged = pd.concat([dfAFDOWN_C1T5, dfAFDOWN_C7T11, dfAFDOWN_C1T2, dfAFDOWN_C7T8], axis=0)
+dfAFDOWNMerged = dfAFDOWNMerged.sort_values(by=['logFC'], ascending=True)
+#Reverse logFC values, logCPM values and sampleValues
+dfAFDOWNMerged['logFC'] = dfAFDOWNMerged['logFC'] * -1
+dfAFDOWNMerged['logCPM'] = dfAFDOWNMerged['logCPM'] * -1
+dfAFDOWNMerged['Versus'] = dfAFDOWNMerged['Versus'].apply(lambda x: '-'.join(x.split('-')[::-1]))
+#Since the logFC values are reversed, what was considered upregulated for Cx-Tx is now downregulated and vice versa:
+UPMergedAF = dfAFDOWNMerged
+
+###############################################More specific###############################################
+#4.2.1 Apoptosis up DHA+NS
+dfAFUPMergedDHANS = pd.concat([dfAFUP_C1T5, dfAFUP_C7T11], axis=0)
+dfAFUPMergedDHANS = dfAFUPMergedDHANS.sort_values(by=['logFC'], ascending=False)
+#Reverse logFC values, logCPM values and sampleValues
+dfAFUPMergedDHANS['logFC'] = dfAFUPMergedDHANS['logFC'] * -1
+dfAFUPMergedDHANS['logCPM'] = dfAFUPMergedDHANS['logCPM'] * -1
+dfAFUPMergedDHANS['Versus'] = dfAFUPMergedDHANS['Versus'].apply(lambda x: '-'.join(x.split('-')[::-1]))
+#Since the logFC values are reversed, what was considered upregulated for Cx-Tx is now downregulated and vice versa:
+DOWNMergedAFDHANS = dfAFUPMergedDHANS
+
+#4.2.2 Apoptosis down DHA+NS
+dfAFDOWNMergedDHANS = pd.concat([dfAFDOWN_C1T5, dfAFDOWN_C7T11], axis=0)
+dfAFDOWNMergedDHANS = dfAFDOWNMergedDHANS.sort_values(by=['logFC'], ascending=True)
+#Reverse logFC values, logCPM values and sampleValues
+dfAFDOWNMergedDHANS['logFC'] = dfAFDOWNMergedDHANS['logFC'] * -1
+dfAFDOWNMergedDHANS['logCPM'] = dfAFDOWNMergedDHANS['logCPM'] * -1
+dfAFDOWNMergedDHANS['Versus'] = dfAFDOWNMergedDHANS['Versus'].apply(lambda x: '-'.join(x.split('-')[::-1]))
+#Since the logFC values are reversed, what was considered upregulated for Cx-Tx is now downregulated and vice versa:
+UPMergedAFDHANS = dfAFDOWNMergedDHANS
+
+#4.3.1 Apoptosis up LPS
+dfAFUPMergedLPS = pd.concat([dfAFUP_C1T2, dfAFUP_C7T8], axis=0)
+dfAFUPMergedLPS = dfAFUPMergedLPS.sort_values(by=['logFC'], ascending=False)
+#Reverse logFC values, logCPM values and sampleValues
+dfAFUPMergedLPS['logFC'] = dfAFUPMergedLPS['logFC'] * -1
+dfAFUPMergedLPS['logCPM'] = dfAFUPMergedLPS['logCPM'] * -1
+dfAFUPMergedLPS['Versus'] = dfAFUPMergedLPS['Versus'].apply(lambda x: '-'.join(x.split('-')[::-1]))
+#Since the logFC values are reversed, what was considered upregulated for Cx-Tx is now downregulated and vice versa:
+DOWNMergedAFLPS = dfAFUPMergedLPS
+
+#4.3.2 Apoptosis down LPS
+dfAFDOWNMergedLPS = pd.concat([dfAFDOWN_C1T2, dfAFDOWN_C7T8], axis=0)
+dfAFDOWNMergedLPS = dfAFDOWNMergedLPS.sort_values(by=['logFC'], ascending=True)
+#Reverse logFC values, logCPM values and sampleValues
+dfAFDOWNMergedLPS['logFC'] = dfAFDOWNMergedLPS['logFC'] * -1
+dfAFDOWNMergedLPS['logCPM'] = dfAFDOWNMergedLPS['logCPM'] * -1
+dfAFDOWNMergedLPS['Versus'] = dfAFDOWNMergedLPS['Versus'].apply(lambda x: '-'.join(x.split('-')[::-1]))
+#Since the logFC values are reversed, what was considered upregulated for Cx-Tx is now downregulated and vice versa:
+UPMergedAFLPS = dfAFDOWNMergedLPS
+
+
+################################################################################################################
 
 #remove genes from UPMerged1_3 if they are also present in UPMerged3_2
 
@@ -170,12 +244,19 @@ IntersectDF1_5.to_excel(writer, sheet_name='1.5-Int')
 UPMerged2_2.to_excel(writer, sheet_name='2.1.1')
 DOWNMerged2_1.to_excel(writer, sheet_name='2.1.2')
 DOWNMerged3_1.to_excel(writer, sheet_name='3.1.1')
-writer.save()
+DOWNMergedAF.to_excel(writer, sheet_name='AF-DOWN')
+UPMergedAF.to_excel(writer, sheet_name='AF-UP')
+DOWNMergedAFDHANS.to_excel(writer, sheet_name='AF-DOWN-DHA+NS')
+UPMergedAFDHANS.to_excel(writer, sheet_name='AF-UP-DHA+NS')
+DOWNMergedAFLPS.to_excel(writer, sheet_name='AF-DOWN-LPS')
+UPMergedAFLPS.to_excel(writer, sheet_name='AF-UP-LPS')
+
+writer.close()
 
 #merge all dataframes that are used for excel
 dfMerged = pd.concat([UPMerged1_3, DOWNMerged1_3, UnionDF1_3, UPMerged1_4, DOWNMerged1_4, UnionDF1_4, UnionDF1_5, UPMerged2_2, DOWNMerged2_1, UPMerged1_4SansInf, DOWNMerged1_4SansInf], axis=0)
 dfMerged = dfMerged.drop_duplicates(subset=['GeneID'], keep='first')
-dfMerged = dfMerged.sort_values(by=['FDR'], ascending=True)
+dfMerged = dfMerged.sort_values(by=['logFC'], ascending=True)
 dfMerged.to_excel("/home/petear/MEGA/TormodGroup/InputData/DFMergedAlgoSiScreenLPSnew.xlsx")
 
 #rbind all dataframes that are used for excel and remove index
