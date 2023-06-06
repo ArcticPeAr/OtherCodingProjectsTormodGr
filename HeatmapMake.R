@@ -154,20 +154,20 @@ library("ComplexHeatmap")
 library(colorRamp2)
 
 
-data16vec <- data.frame(data[12])
-data16vec <- as.vector(data16vec[,1])
-
-data11vec <- data.frame(data[13])
-data11vec <- as.vector(data11vec[,1])
-
-data12vec <- data.frame(data[14])
+data12vec <- data.frame(data[12])
 data12vec <- as.vector(data12vec[,1])
 
-data13vec <- data.frame(data[15])
+data13vec <- data.frame(data[13])
 data13vec <- as.vector(data13vec[,1])
 
-data10vec <- data.frame(data[16])
-data10vec <- as.vector(data10vec[,1])
+data14vec <- data.frame(data[14])
+data14vec <- as.vector(data14vec[,1])
+
+data15vec <- data.frame(data[15])
+data15vec <- as.vector(data15vec[,1])
+
+data16vec <- data.frame(data[16])
+data16vec <- as.vector(data16vec[,1])
 
 
 
@@ -204,21 +204,18 @@ pdf("hm1.pdf", width = 10, height = 14)
 
 # Create HeatmapAnnotation from data[16]
 ha_row = rowAnnotation(
-    ALS= data13vec,
-    PD = data12vec,
-    AD = data11vec,
-    col = list(ALS = c("1" = "#238b45", "0" = "white"),
-               PD = c("1" = "#238b45", "0" = "white"),
-               AD = c("1" = "#238b45", "0" = "white")
+    AD = data12vec,
+    col = list(AD = c("1" = "#238b45", "0" = "white")
     ),
     gp = gpar(col = "black"),border = FALSE
     )
 
 rowright = rowAnnotation(
-   Uptake = data16vec, Degradation = data17vec,  
+   Uptake = data14vec, Degradation = data15vec, Autophagy = data16vec, 
     col = list(
                Uptake = c("1" = "#238b45", "0" = "white"),
-               Degradation = c("1" = "#238b45", "0" = "white")
+               Degradation = c("1" = "#238b45", "0" = "white"),
+               Autophagy = c("1" = "#238b45", "0" = "white")
     ),
     gp = gpar(col = "black"),border = FALSE
     )
@@ -236,7 +233,7 @@ ha_col = HeatmapAnnotation(
 colors <- c("white","#253494", "#ce1256")
 
 # Draw the heatmap with heatmap annotations
-Heatmap(dForHM, name = "Genes", cluster_rows = TRUE, row_dend_side = "right", left_annotation = ha_row, row_names_gp = gpar(fontface = "italic"), bottom_annotation = ha_col, cluster_columns=FALSE,show_row_dend = FALSE, rect_gp = gpar(col = "black", lwd = 0.5), col = colors, na_col = "white",right_annotation =rowright)
+Heatmap(dForHM, name = "Genes", cluster_rows = TRUE, row_dend_side = "right", left_annotation = ha_row, row_names_gp = gpar(fontface = "italic"),  cluster_columns=FALSE,show_row_dend = FALSE, rect_gp = gpar(col = "black", lwd = 0.5), col = colors, na_col = "white",right_annotation =rowright)
 
 
 
