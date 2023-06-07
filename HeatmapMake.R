@@ -108,6 +108,7 @@ data <- data[,-1]
 data[1:16] <- lapply(data[1:16], as.numeric)
 
 
+
 ############################################################################################
 # Column removal
 ############################################################################################
@@ -196,10 +197,18 @@ saveWorkbook(wb, file = filename, overwrite = TRUE)
 
 
 
+
 # dev.off()
 
 #print column 1-15
 # print(data[,1:15])
+
+# In columns 1.1.2, 1.2.2, 2.1.2, 2.2.2, 3.1.2 and 3.2.2 change 1 to -1
+# in columns 2,4,6,8 and 10 change 1 to -1
+data[,c(2,4,6,8,10)]  <- data[,c(2,4,6,8,10)] * -1
+
+
+
 
 
 library("ComplexHeatmap")
@@ -292,7 +301,7 @@ ha_col = HeatmapAnnotation(
 #ha_col = HeatmapAnnotation(foo = anno_text(textt, gp = gpar(fontsize = 8+4)))
 
 #colors = structure(1:3, names = c("UP", "0", "DOWN")) # black, red, green, blue
-colors <- c("white","#253494", "#ce1256")
+colors <- c("#253494", "white", "#ce1256")
 
 # Draw the heatmap with heatmap annotations
 Heatmap(dForHM, name = "Genes", cluster_rows = TRUE, row_dend_side = "right", left_annotation = ha_row, row_names_gp = gpar(fontface = "italic"),  cluster_columns=FALSE,show_row_dend = FALSE, rect_gp = gpar(col = "black", lwd = 0.5), col = colors, na_col = "white",right_annotation =rowright)
