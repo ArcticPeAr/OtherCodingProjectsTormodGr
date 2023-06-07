@@ -6,10 +6,8 @@ library(grid)
 data <- read_excel("/home/petear/MEGA/TormodGroup/GeneArrows.xlsx")
 data <- as.data.frame(data)
 
-#change name of column 3 to 1.1.2
-# colnames(data)[3] <- "1.1.2"
-# colnames(data)[4] <- "1.2.1"
-# colnames(data)[5] <- "1.2.2"
+#Change name of column u-d to UpDown
+colnames(data)[colnames(data) == "u-d"] <- "UpDown"
 
 
 # change ↑ to up and ↓ to down for column u-d
@@ -19,7 +17,10 @@ data$UpDown <- gsub("↓", "down", data$UpDown)
 #rplace NA from column u-d and replace with 0
 data$UpDown[is.na(data$UpDown)] <- 0
 
+# create a new column called Clearance and fill it with 0
+data$Clearance <- 0
 
+# if the value in column 
 
 # UpGeneVec <- c()
 # DownGeneVec <- c()
@@ -74,7 +75,7 @@ data$Uptake[data$`1.2.2` == 1] <- 1
 # If any value in column 5 to 8 is 1, change the value in column Degradation to 1
 data$Degradation[data$`2.1.1` == 1] <- 1
 data$Degradation[data$`2.1.2` == 1] <- 1
-#data$Degradation[data$`2.2.1` == 1] <- 1
+data$Degradation[data$`2.2.1` == 1] <- 1
 data$Degradation[data$`2.2.2` == 1] <- 1
 
 # If any value in column 3.1.1 , 3.1.2 , 3.2.1 , 3.2.2 is 1, change the value in column Autophagy to 1  
@@ -83,6 +84,18 @@ data$Autophagy[data$`3.1.2` == 1] <- 1
 data$Autophagy[data$`3.2.1` == 1] <- 1
 data$Autophagy[data$`3.2.2` == 1] <- 1
 
+# If any value in column 4.1.1 , 4.1.2 , 4.2.1 , 4.2.2 is 1, change the value in column A to 1
+data$A[data$`4.1.1` == 1] <- 1
+data$A[data$`4.1.2` == 1] <- 1
+data$A[data$`4.2.1` == 1] <- 1
+data$A[data$`4.2.2` == 1] <- 1
+
+
+#If both Uptake and Degradation is 1, change the value in column Clearance to 1
+data$Clearance[data$Uptake == 1 & data$Degradation == 1] <- 1
+
+#If both Uptake and Autophagy is 1, change the value in column AutoClear to 1
+#data$AutoClear[data$Uptake == 1 & data$Autophagy == 1] <- 1
 
 
 #set first column as rownames
@@ -92,38 +105,77 @@ rownames(data) <- data[,1]
 data <- data[,-1]
 
 #make data[1:21] numeric
-data[1:12] <- lapply(data[1:12], as.numeric)
+data[1:16] <- lapply(data[1:16], as.numeric)
 
-#set 0 in column 19 to NA (for the heatmap)
-data[19][data[19] == 0] <- "NA"
-
-#set column 13 as string
-data["UpDown"] <- lapply(data["UpDown"], as.character)
-data[14] <- lapply(data[14], as.character)
-data[15] <- lapply(data[15], as.character)
-data[16] <- lapply(data[16], as.character)
-data[17] <- lapply(data[17], as.character)
-data[18] <- lapply(data[18], as.character)
 
 ############################################################################################
 # Column removal
 ############################################################################################
 # remove column 16
-data <- data[,-"Clearance"]
-data <- subset(data, select = -Clearance)
+#data <- subset(data, select = -AutoClear)
+
+#remove columns with all 0 in column 1:16
+data <- data[,colSums(data[1:16]) != 0]
+
+############################################################################################
+# Saving data
+############################################################################################
+
+#
+df <- data.frame(data)
+
+#remove rows where UpDown is 0
+df <- df[df$UpDown != 0,]
+dfUP <- df[df$UpDown == "up",]
+dfDOWN <- df[df$UpDown == "down",]
 
 
+# create a vector of rownmanes where the value of column Uptake is 1
+UptakeVecUp <- rownames(dfUP[dfUP$Uptake == 1,])
+UptakeVecUp <- UptakeVecUp[!(UptakeVecUp == "NA" | grepl("^NA\\.", UptakeVecUp))]
+UptakeVecDown <- rownames(dfDOWN[dfDOWN$Uptake == 1,])
+UptakeVecDown <- UptakeVecDown[!(UptakeVecDown == "NA" | grepl("^NA\\.", UptakeVecDown))]
+DegradationVecUP <- rownames(dfUP[dfUP$Degradation == 1,])
+DegradationVecUP <- DegradationVecUP[!(DegradationVecUP == "NA" | grepl("^NA\\.", DegradationVecUP))]
+DegradationVecDown <- rownames(dfDOWN[dfDOWN$Degradation == 1,])
+DegradationVecDown <- DegradationVecDown[!(DegradationVecDown == "NA" | grepl("^NA\\.", DegradationVecDown))]
+AutophagyVecUP <- rownames(dfUP[dfUP$Autophagy == 1,])
+AutophagyVecUP <- AutophagyVecUP[!(AutophagyVecUP == "NA" | grepl("^NA\\.", AutophagyVecUP))]
+AutophagyVecDown <- rownames(dfDOWN[dfDOWN$Autophagy == 1,])
+AutophagyVecDown <- AutophagyVecDown[!(AutophagyVecDown == "NA" | grepl("^NA\\.", AutophagyVecDown))]
+ClearanceVecUP <- rownames(dfUP[dfUP$Clearance == 1,])
+ClearanceVecUP <- ClearanceVecUP[!(ClearanceVecUP == "NA" | grepl("^NA\\.", ClearanceVecUP))]
+ClearanceVecDown <- rownames(dfDOWN[dfDOWN$Clearance == 1,])
+ClearanceVecDown <- ClearanceVecDown[!(ClearanceVecDown == "NA" | grepl("^NA\\.", ClearanceVecDown))]
+
+library(openxlsx)
+
+filename <- "ForClueSigCom.xlsx"
+wb <- createWorkbook()
+
+# Create sheets and write vectors
+addWorksheet(wb, "UptakeUP")
+addWorksheet(wb, "UptakeDown")
+writeData(wb, "UptakeUP", UptakeVecUp)
+writeData(wb, "UptakeDown", UptakeVecDown)
+
+addWorksheet(wb, "DegradationUP")
+addWorksheet(wb, "DegradationDown")
+writeData(wb, "DegradationUP", DegradationVecUP)
+writeData(wb, "DegradationDown", DegradationVecDown)
+
+addWorksheet(wb, "AutophagyUP")
+addWorksheet(wb, "AutophagyDown")
+writeData(wb, "AutophagyUP", AutophagyVecUP)
+writeData(wb, "AutophagyDown", AutophagyVecDown)
+
+addWorksheet(wb, "ClearanceUP")
+addWorksheet(wb, "ClearanceDown")
+writeData(wb, "ClearanceUP", ClearanceVecUP)
+writeData(wb, "ClearanceDown", ClearanceVecDown)
 
 
-# add a row at the bottom of the dataframe with values 
-
-
-
-# Make the heatmap with rownames being the names on the y-axis and the column names being the names on the x-axis
-library(pheatmap)
-
-
-
+saveWorkbook(wb, file = filename, overwrite = TRUE)
 ############################################################################################
 # PLOTTING
 ############################################################################################
@@ -154,29 +206,38 @@ library("ComplexHeatmap")
 library(colorRamp2)
 
 
-data12vec <- data.frame(data[12])
-data12vec <- as.vector(data12vec[,1])
+#Clearance
+#Extra steps created to make it similar to the other three here. BUt maybe a difference is better.
+dataCLvec <- data.frame(data["Clearance"])
+#dataCLvec[dataCLvec == 0] <- NA
+dataCLvec <- as.vector(dataCLvec[,1])
 
-data13vec <- data.frame(data[13])
-data13vec <- as.vector(data13vec[,1])
+#AD
+dataADvec <- data.frame(data["A"])
+dataADvec <- as.vector(dataADvec[,1])
 
-data14vec <- data.frame(data[14])
-data14vec <- as.vector(data14vec[,1])
+#UpDown
+dataUDvec <- data.frame(data["UpDown"])
+dataUDvec <- as.vector(dataUDvec[,1])
 
-data15vec <- data.frame(data[15])
-data15vec <- as.vector(data15vec[,1])
+#Uptake
+dataUPTvec <- data.frame(data["Uptake"])
+dataUPTvec <- as.vector(dataUPTvec[,1])
 
-data16vec <- data.frame(data[16])
-data16vec <- as.vector(data16vec[,1])
+#Degradation
+dataDGvec <- data.frame(data["Degradation"])
+dataDGvec <- as.vector(dataDGvec[,1])
 
-
+#Autophagy
+dataAUTvec <- data.frame(data["Autophagy"])
+dataAUTvec <- as.vector(dataAUTvec[,1])
 
 
 
 
 
 #add row at the bottom of the dataframe with values 
-data1_9 <- c("Autophagy","Autophagy","Autophagy", "Degradation","Degradation","Degradation","Endocytosis","Endocytosis","Endocytosis")
+data1_9 <- c("Autophagy","Autophagy","Autophagy","Autophagy", "Degradation","Degradation","Degradation","Degradation","Endocytosis","Endocytosis", "Endocytosis")
 
 
 
@@ -184,38 +245,39 @@ dForHM <- data[,1:11]
 
 
 
-#if the column-name in 1 change 1 to "UP"
+# #if the column-name in 1 change 1 to "UP"
 
-#CHange 1 to "UP" for column 1, 3, 4, 7 and 9
-dForHM[,1][dForHM[,1] == 1] <- "UP" #111
-dForHM[,3][dForHM[,3] == 1] <- "UP" #121
-dForHM[,4][dForHM[,4] == 1] <- "UP" #211
-dForHM[,7][dForHM[,7] == 1] <- "UP"
-dForHM[,9][dForHM[,9] == 1] <- "UP"
+# #CHange 1 to "UP" for column 1, 3, 4, 7 and 9
+# dForHM[,1][dForHM[,1] == 1] <- "UP" #111
+# dForHM[,3][dForHM[,3] == 1] <- "UP" #121
+# dForHM[,4][dForHM[,4] == 1] <- "UP" #211
+# dForHM[,7][dForHM[,7] == 1] <- "UP"
+# dForHM[,9][dForHM[,9] == 1] <- "UP"
 
-#CHange 1 to "DOWN" for column 2, 5, 6, and 8
-dForHM[,2][dForHM[,2] == 1] <- "DOWN"
-dForHM[,5][dForHM[,5] == 1] <- "DOWN"
-dForHM[,6][dForHM[,6] == 1] <- "DOWN"
-dForHM[,8][dForHM[,8] == 1] <- "DOWN"
+# #CHange 1 to "DOWN" for column 2, 5, 6, and 8
+# dForHM[,2][dForHM[,2] == 1] <- "DOWN"
+# dForHM[,5][dForHM[,5] == 1] <- "DOWN"
+# dForHM[,6][dForHM[,6] == 1] <- "DOWN"
+# dForHM[,8][dForHM[,8] == 1] <- "DOWN"
 
-pdf("hm1.pdf", width = 10, height = 14)
+pdf("hm5.pdf", width = 10, height = 14)
 
 
 # Create HeatmapAnnotation from data[16]
 ha_row = rowAnnotation(
-    AD = data12vec,
+    AD = dataADvec,
     col = list(AD = c("1" = "#238b45", "0" = "white")
     ),
     gp = gpar(col = "black"),border = FALSE
     )
 
 rowright = rowAnnotation(
-   Uptake = data14vec, Degradation = data15vec, Autophagy = data16vec, 
+   Uptake = dataUPTvec, Degradation = dataDGvec, Autophagy = dataAUTvec, Clearance = dataCLvec, 
     col = list(
                Uptake = c("1" = "#238b45", "0" = "white"),
                Degradation = c("1" = "#238b45", "0" = "white"),
-               Autophagy = c("1" = "#238b45", "0" = "white")
+               Clearance = c("1" = "#FF5722", "0" = "white"),
+                Autophagy = c("1" = "#238b45", "0" = "white")
     ),
     gp = gpar(col = "black"),border = FALSE
     )
