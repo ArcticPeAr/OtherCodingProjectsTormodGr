@@ -16,8 +16,13 @@ import urllib.error
 max_retries = 10  # Maximum number of retry attempts
 retry_delay = 10  # Delay between retries in seconds
 
-
+#############################################################################
+#Functions
+#############################################################################
 def predictBBB(smiles):
+    '''
+    Function to predict BBB penetration from smiles by LightBBB
+    '''
     serverURL = 'http://165.194.18.43:7020/bbb_permeability?'
     param = urlencode({'smiles': smiles})
     response = requests.get(serverURL + param)
@@ -69,13 +74,14 @@ def pubchemSmiles(pert):
     except:
         return np.nan
     
+###########################
 
+#Import xlsx file with perturbagens to find BBB penetration for
+pertDF = pd.read_excel('/home/petear/MEGA/TormodGroup/InputData/BBBFirstGroup.xlsx')
 
-#Import tsv file with perturbagens
-importedPertDF = pd.read_csv('/home/petear/MEGA/TormodGroup/InputData/algos.tsv', sep='\t')
-#keeping extra columns for substituting later with smiles 
-pertDF = importedPertDF[['Name', 'Perturbagen']]
-# pertDF = pertDF.rename(columns={'p-value Bonferroni (up)': 'Smiles'})
+#importedPertDF = pd.read_csv('/home/petear/MEGA/TormodGroup/InputData/algos.tsv', sep='\t')
+#pertDF = importedPertDF[['Name', 'Perturbagen']]
+#pertDF = pertDF.rename(columns={'p-value Bonferroni (up)': 'Smiles'})
 
 
 # PertList = pertDF['Perturbagen'].tolist()
@@ -109,14 +115,14 @@ KnownSmilesDF3 = pd.read_csv('/home/petear/MEGA/TormodGroup/InputData/compoundin
 
 
 
-pertDF3 = pd.merge(pertDF, KnownSmilesDF3, left_on='Perturbagen', right_on='cmap_name', how='left')
+pertDF3 = pd.merge(pertDF, KnownSmilesDF3, left_on='Perts', right_on='cmap_name', how='left')
 naCount3 = pertDF3['cmap_name'].isna().sum()
 
 #remove column 'target', 'moa', 'inchi_key', 'compound_aliases
 pertDF3 = pertDF3.drop(columns=['target', 'moa', 'inchi_key', 'compound_aliases'])
 
 #remove duplicate rows
-pertDF3 = pertDF3.drop_duplicates(subset=['Perturbagen'])
+pertDF3 = pertDF3.drop_duplicates(subset=['Perts'])
 
 #add empty column for smiles
 pertDF3['CannonSmiles'] = np.nan
@@ -136,14 +142,17 @@ for index, value in pertDF3['canonical_smiles'].items():
     
 #remove rows with NaN values in CannonSmiles column
 pertDF3 = pertDF3[pertDF3['CannonSmiles'].notna()]
-
+#remove first row
+pertDF3 = pertDF3.drop(pertDF3.index[0])
    ############
 pertDF3['BBBPenetration'] = np.nan
 
+#save pertDF3 to excel
+pertDF3.to_excel('/home/petear/MEGA/TormodGroup/InputData/BBB_Predictions.xlsx')
 
 
 #use predictBBB function to predict BBB penetration
-for index, value in pertDF3['CannonSmiles'].items():
+for index, value in pertDF3['canonical_smiles'].items():
     pertDF3.at[index, 'BBBPenetration'] = predictBBB(value)
     print(index, value)
 
