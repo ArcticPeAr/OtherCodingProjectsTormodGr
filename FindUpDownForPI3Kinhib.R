@@ -2,6 +2,17 @@ library(readxl)  # Load the package
 setwd("/home/petear/MEGA/TormodGroup/InputData")  # Set the working directory
 df <- read_excel("/home/petear/MEGA/TormodGroup/InputData/PI3K IL18 IL1B gene expression 3 doses.xlsx")
 
+############################################
+# Setting base dir
+############################################
+
+base_dir <- "/home/petear/MEGA/TormodGroup/InputData"
+setwd(base_dir)
+
+############################################
+# Modifying the column names
+############################################
+
 df <- as.data.frame(df)
 
 # Assuming your dataframe is called df
@@ -45,6 +56,9 @@ modify_column_names <- function(names) {
 # Apply the function to your dataframe's column names
 colnames(df) <- modify_column_names(colnames(df))
 
+############################################
+# Finding the chemical names for the genes based on the gene expression in column ending with 100
+############################################
 
 cols_100 <- grep("_100$", names(df), value = TRUE)
 
@@ -103,12 +117,12 @@ library(jpeg)
 # Function to download chemical structure as PNG
 download_chemical_structure <- function(chemical_names, folder_name) {
   # Create a new folder for the vector
-  dir.create(file.path("/home/petear/", folder_name))
+  dir.create(file.path(base_dir, folder_name))
   
   for (chemical_name in chemical_names) {
     # Sanitize chemical name for file path
     safe_chemical_name <- gsub("[[:punct:]]", "", gsub(" ", "_", chemical_name))
-    file_path <- file.path("/home/petear/", folder_name, paste0(safe_chemical_name, ".png"))
+    file_path <- file.path(base_dir, folder_name, paste0(safe_chemical_name, ".png"))
     
     # Build the API request URL for PubChem
     url <- paste0("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/", URLencode(chemical_name), "/PNG")
@@ -133,6 +147,7 @@ download_chemical_structure(IL1B_low_df$Navn, "IL1B_low")
 ############################################
 #Finding IC50 values for the chemical structures in relation to subunuites of PI3K
 ############################################
+
 IC50_file <- read_excel("/home/petear/MEGA/TormodGroup/InputData/IC50.xlsx")
 IC50_file <- as.data.frame(IC50_file)
 
@@ -154,3 +169,23 @@ for (sheet_name in names(list_of_dfs)) {
 
 # Save the workbook to a file
 saveWorkbook(wb, "IC50_sorted_to_IL1B_or_IL18_High_and_Low.xlsx", overwrite = TRUE)
+
+############################################
+#zipping the folders and xlsx file
+############################################
+library(zip)
+
+folders <- c("IL18_high", "IL18_low", "IL1B_high", "IL1B_low")
+excel_file <- "IC50_sorted_to_IL1B_or_IL18_High_and_Low.xlsx"
+
+files_to_zip <- c(folders, excel_file)
+
+
+zip("IC50_sorted_to_IL1B_or_IL18_High_and_Low.zip", files = files_to_zip, recurse = TRUE)
+
+############################################
+#deleting the folders and xlsx file
+############################################
+
+file.remove(excel_file)
+unlink(folders, recursive = TRUE)
